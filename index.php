@@ -4,6 +4,7 @@ include 'config.php';
 $result = $conn->query("SELECT * FROM mahasiswa");
 ?>
 
+<!--Halaman Tampilan Utama -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -15,26 +16,30 @@ $result = $conn->query("SELECT * FROM mahasiswa");
 <body>
     <div class="container mt-5">
         <h2>Data Mahasiswa</h2>
-        <a href="tambah.php" class="btn btn-primary mb-3">Tambah Mahasiswa</a>
+        <a href="tambah.php" class="btn btn-primary mb-3">Tambah Mahasiswa</a> <!--Untuk mengarahkan ke halaman tambah-->
         <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>NIM</th>
                     <th>Nama</th>
                     <th>Jurusan</th>
+                    <th>Gender</th>
                     <th>Alamat</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
+                 <!--perulangan mengambil dari setiap data hasil query-->
                 <?php while($row = $result->fetch_assoc()): ?>
                 <tr>
                     <td><?php echo $row['nim']; ?></td>
                     <td><?php echo $row['nama']; ?></td>
                     <td><?php echo $row['jurusan']; ?></td>
+                    <td><?php echo $row['gender']; ?></td>
                     <td><?php echo $row['alamat']; ?></td>
-                    <td>
-                        <a href="edit.php?nim=<?php echo $row['nim']; ?>" class="btn btn-sm btn-warning">Edit</a>
+                    <!-- Untuk Link ke sebuah perintah beserta dengan bentuk button-->
+                    <td>    
+                        <a href="edit.php?nim=<?php echo $row['nim']; ?>" class="btn btn-sm btn-warning">Edit</a> 
                         <a href="hapus.php?nim=<?php echo $row['nim']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus?')">Hapus</a>
                     </td>
                 </tr>

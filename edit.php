@@ -1,15 +1,18 @@
 <?php
 include 'config.php';
 
+// Memastikan request method POST untuk mengupdate data
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nim = $_POST['nim'];
     $nama = $_POST['nama'];
     $jurusan = $_POST['jurusan'];
+    $gender = $_POST['gender'];
     $alamat = $_POST['alamat'];
 
-    $sql = "UPDATE mahasiswa SET nama=?, jurusan=?, alamat=? WHERE nim=?";
+    // Query untuk update data mahasiswa
+    $sql = "UPDATE mahasiswa SET nama=?, jurusan=?, gender=?, alamat=? WHERE nim=?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssss", $nama, $jurusan, $alamat, $nim);
+    $stmt->bind_param("sssss", $nama, $jurusan, $gender, $alamat, $nim);
 
     if ($stmt->execute()) {
         header("Location: index.php");
@@ -19,6 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     $stmt->close();
 } else {
+    // Mengambil data mahasiswa berdasarkan nim untuk ditampilkan di form
     $nim = $_GET['nim'];
     $result = $conn->query("SELECT * FROM mahasiswa WHERE nim='$nim'");
     $row = $result->fetch_assoc();
@@ -37,18 +41,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="container mt-5">
         <h2>Edit Mahasiswa</h2>
         <form action="edit.php" method="post">
-            <input type="hidden" name="nim" value="<?php echo $row['nim']; ?>">
+            <input type="hidden" name="nim" value="<?php echo htmlspecialchars($row['nim']); ?>">
             <div class="mb-3">
                 <label for="nama" class="form-label">Nama</label>
-                <input type="text" class="form-control" id="nama" name="nama" value="<?php echo $row['nama']; ?>" required>
+                <input type="text" class="form-control" id="nama" name="nama" value="<?php echo htmlspecialchars($row['nama']); ?>" required>
             </div>
             <div class="mb-3">
                 <label for="jurusan" class="form-label">Jurusan</label>
-                <input type="text" class="form-control" id="jurusan" name="jurusan" value="<?php echo $row['jurusan']; ?>" required>
+                <input type="text" class="form-control" id="jurusan" name="jurusan" value="<?php echo htmlspecialchars($row['jurusan']); ?>" required>
+            </div>
+            <div class="mb-3">
+                <label for="gender" class="form-label">Gender</label>
+                <select class="form-select" id="gender" name="gender" required>
+                    <option value="">Pilih Jenis Kelamin</option>
+                    <option value="Laki-laki" <?php if ($row['gender'] == 'Laki-laki') echo 'selected'; ?>>Laki-laki</option>
+                    <option value="Perempuan" <?php if ($row['gender'] == 'Perempuan') echo 'selected'; ?>>Perempuan</option>
+                </select>
             </div>
             <div class="mb-3">
                 <label for="alamat" class="form-label">Alamat</label>
-                <textarea class="form-control" id="alamat" name="alamat" required><?php echo $row['alamat']; ?></textarea>
+                <textarea class="form-control" id="alamat" name="alamat" required><?php echo htmlspecialchars($row['alamat']); ?></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Update</button>
             <a href="index.php" class="btn btn-secondary">Kembali</a>
